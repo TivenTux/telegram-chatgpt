@@ -55,31 +55,54 @@ totalaierrors = 0
 bot = telebot.TeleBot(telegram_bot_token)
 keywordlen = len(bot_keyword)
 
-#remove any special characters from user name
 def cleanupname(datainput):
+    '''
+    Takes string, remove special characters.
+    '''
     cleanedupname=re.sub("[^A-Za-z]","",datainput)
     cleanedupname = cleanedupname[0].upper() + cleanedupname[1:]
     return (cleanedupname)
 
-#pass and process all messages through here
+def get_question(data):
+    '''
+    Takes message data, returns user's prompt.
+    '''
+    aiquestion = data.text[keywordlen:]
+    return aiquestion
+
+def get_username(data):
+    '''
+    Takes message data, returns user's first name.
+    '''
+    try:
+        usern = data.from_user.first_name
+    except Exception as e:
+        print(e)
+        usern = 'User'
+    return usern
+
+def final_prompt(usern, aiquestion):
+    '''
+    Takes user's name and question, returns final AI prompt.
+    '''
+    if int(pass_author) == 1:
+        finprompt1 = "Below is a conversation between a user named " + usern + " and an AI assistant named " + bot_nickname + ".\n" + bot_nickname + " was made by Tiven and provides helpful answers.\n" + usern + ": "
+    elif int(pass_author) == 0 or usern == 'User':
+        finprompt1 = "Below is a conversation between a user and an AI assistant named " + bot_nickname + ".\n" + bot_nickname + " was made by Tiven and provides helpful answers.\n" + "User: "
+    aifinal_question = finprompt1 + aiquestion + "\n" + bot_nickname + ":"
+    return aifinal_question
+
 @bot.message_handler(func=lambda msg: True)
 def echo_all(message):
+    '''
+    Takes message data and processes it.
+    '''
     messagelen = len(message.text)
     #check for keyword and for total message length over 11 chars
-    if (message.text).upper().startswith(bot_keyword.upper()) and messagelen > 11:
-        #finding user's first name, because not every user sets a username
-        try:
-            usern = message.from_user.first_name
-        except Exception as e:
-            print(e)
-            usern = 'User'
-        aiquestion = message.text[keywordlen:]
-        #check for option in conf
-        if int(pass_author) == 1:
-            finprompt1 = "Below is a conversation between a user named " + usern + " and an AI assistant named " + bot_nickname + ".\n" + bot_nickname + " was made by Tiven and provides helpful answers.\n" + usern + ": "
-        elif int(pass_author) == 0:
-            finprompt1 = "Below is a conversation between a user and an AI assistant named " + bot_nickname + ".\n" + bot_nickname + " was made by Tiven and provides helpful answers.\n" + "User: "
-        aifinal_question = finprompt1 + aiquestion + "\n" + bot_nickname + ":"
+    if (message.text).upper().startswith(bot_keyword.upper()):
+        usern = get_username(message)
+        aiquestion = get_question(message)
+        aifinal_question = final_prompt(usern, aiquestion)
         #send prompt to AI depending on ai selection option
         if int(aiselection) == 1:
             finalresponse = aiprocess1(aifinal_question)
