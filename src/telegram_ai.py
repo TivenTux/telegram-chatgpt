@@ -1,4 +1,5 @@
 import os
+from os import environ
 import requests
 import re
 import json
@@ -7,28 +8,51 @@ import openai
 
 ## configuration ##
 #use number 1 for openAI or 2 for custom api
-aiselection = os.environ['aiselection']
+if environ.get('aiselection') is not None:
+    aiselection = os.environ['aiselection']
+else:
+    aiselection = 1
 
 #ChatGPT / openAI settings
-openaikey = os.environ['openaikey']
+if environ.get('openaikey') is not None:
+    openaikey = os.environ['openaikey']
+else:
+    openaikey = ''
 
-#locally hosted LLM settings - ignore this if you are using ChatGPT / OpenAI
+#locally hosted LLM settings - ignore this section if you are using ChatGPT / OpenAI
 #aihost = '127.0.0.1:5000'
-aihost = os.environ['aihost']
+if environ.get('aihost') is not None:
+    aihost = os.environ['aihost']
+else:
+    aihost = '127.0.0.1:5000'
 aiurl = f'http://{aihost}/api/v1/generate'
 
 #telegram settings
-TELEGRAM_BOT_TOKEN = os.environ['TELEGRAM_BOT_TOKEN']
+if environ.get('telegram_bot_token') is not None:
+    telegram_bot_token = os.environ['telegram_bot_token']
+else:
+    telegram_bot_token = ''
 
-bot_nickname = os.environ['bot_nickname']
-bot_keyword = os.environ['bot_keyword']
+if environ.get('bot_nickname') is not None:
+    bot_nickname = os.environ['bot_nickname']
+else:
+    bot_nickname = 'yyyy'
+
+if environ.get('bot_keyword') is not None:
+    bot_keyword = os.environ['bot_keyword']
+else:
+    bot_keyword = ''
 
 #Option to give the user's first name to the bot. Enable with 1, disable with 0.
-pass_author = os.environ['pass_author']
+#Default enabled.
+if environ.get('pass_author') is not None:
+    pass_author = os.environ['pass_author']
+else:
+    pass_author = 1
 
 #initiate some vars
 totalaierrors = 0
-bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
+bot = telebot.TeleBot(telegram_bot_token)
 keywordlen = len(bot_keyword)
 
 #remove any special characters from user name
@@ -51,15 +75,15 @@ def echo_all(message):
             usern = 'User'
         aiquestion = message.text[keywordlen:]
         #check for option in conf
-        if pass_author == 1:
+        if int(pass_author) == 1:
             finprompt1 = "Below is a conversation between a user named " + usern + " and an AI assistant named " + bot_nickname + ".\n" + bot_nickname + " was made by Tiven and provides helpful answers.\n" + usern + ": "
-        elif pass_author == 0:
+        elif int(pass_author) == 0:
             finprompt1 = "Below is a conversation between a user and an AI assistant named " + bot_nickname + ".\n" + bot_nickname + " was made by Tiven and provides helpful answers.\n" + "User: "
         aifinal_question = finprompt1 + aiquestion + "\n" + bot_nickname + ":"
         #send prompt to AI depending on ai selection option
-        if aiselection == 1:
+        if int(aiselection) == 1:
             finalresponse = aiprocess1(aifinal_question)
-        elif aiselection == 2:
+        elif int(aiselection) == 2:
             finalresponse = aiprocess2(aifinal_question, message)
         bot.reply_to(message, finalresponse)
 
