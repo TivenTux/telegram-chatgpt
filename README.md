@@ -27,6 +27,6 @@ docker build -t telegram-chatgpt .
 ## Running the container
 
 ```bash
-docker run -d -e "openaikey=yyy" -e "telegram_bot_token=yyy" -e "bot_nickname=yyy" -e "bot_nickname=yyy" -e "bot_keyword=yyy" telegram-chatgpt
+docker run -d -e "openaikey=yyy" -e "telegram_bot_token=yyy" -e "bot_nickname=yyy" -e "bot_keyword=yyy" telegram-chatgpt
 
 ```
