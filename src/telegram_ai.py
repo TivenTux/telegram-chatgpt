@@ -85,7 +85,7 @@ def final_prompt(usern, aiquestion):
     '''
     Takes user's name and question, returns final AI prompt.
     '''
-    if int(pass_author) == 1:
+    if int(pass_author) == 1 and usern != 'User':
         finprompt1 = "Below is a conversation between a user named " + usern + " and an AI assistant named " + bot_nickname + ".\n" + bot_nickname + " was made by Tiven and provides helpful answers.\n" + usern + ": "
     elif int(pass_author) == 0 or usern == 'User':
         finprompt1 = "Below is a conversation between a user and an AI assistant named " + bot_nickname + ".\n" + bot_nickname + " was made by Tiven and provides helpful answers.\n" + "User: "
