@@ -184,5 +184,9 @@ def aiprocess2(aifinal_question, aifinal_questionoriginal):
         return "nope"
     return result
 
-#keeps the process running until stopped
-bot.infinity_polling()
+def Main():
+    #keeps the process running until stopped
+    bot.infinity_polling()
+
+if __name__ == "__main__":
+    Main()
