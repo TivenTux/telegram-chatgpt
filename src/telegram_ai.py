@@ -36,12 +36,12 @@ else:
 if environ.get('bot_nickname') is not None:
     bot_nickname = os.environ['bot_nickname']
 else:
-    bot_nickname = 'yyyy'
+    bot_nickname = 'Phoenix'
 
 if environ.get('bot_keyword') is not None:
     bot_keyword = os.environ['bot_keyword']
 else:
-    bot_keyword = ''
+    bot_keyword = 'Phoenix'
 
 #Option to give the user's first name to the bot. Enable with 1, disable with 0.
 #Default enabled.
