@@ -91,6 +91,7 @@ def get_chat_type(data):
     Takes message data, returns type of chat.
     '''
     try:
+        #can be either “private”, “group”, “supergroup” or “channel”
         chat_type = data.chat.type
     except Exception as e:
         print(e)
