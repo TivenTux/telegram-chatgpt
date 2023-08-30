@@ -49,6 +49,11 @@ if environ.get('pass_author') is not None:
     pass_author = os.environ['pass_author']
 else:
     pass_author = 1
+#allow private chat with the bot or restrict to channels only
+if environ.get('allow_private') is not None:
+    allow_private = os.environ['allow_private']
+else:
+    allow_private = 1 #enable with 1 disable with 0
 
 #initiate some vars
 totalaierrors = 0
@@ -81,6 +86,17 @@ def get_username(data):
         usern = 'User'
     return usern
 
+def get_chat_type(data):
+    '''
+    Takes message data, returns type of chat.
+    '''
+    try:
+        chat_type = data.chat.type
+    except Exception as e:
+        print(e)
+        chat_type = 'unk'
+    return chat_type
+
 def final_prompt(usern, aiquestion):
     '''
     Takes user's name and question, returns final AI prompt.
@@ -103,6 +119,11 @@ def echo_all(message):
         usern = get_username(message)
         aiquestion = get_question(message)
         aifinal_question = final_prompt(usern, aiquestion)
+        chat_type = get_chat_type(message)
+        if int(allow_private) != 1:
+            if chat_type == 'private':
+                print('private chat, ignoring')
+                return
         #send prompt to AI depending on ai selection option
         if int(aiselection) == 1:
             finalresponse = aiprocess1(aifinal_question)
