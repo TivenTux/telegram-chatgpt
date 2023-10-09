@@ -89,9 +89,9 @@ def get_username(data):
 def get_chat_type(data):
     '''
     Takes message data, returns type of chat.
+    Can return private, group, supergroup, channel or unknown (on error).
     '''
     try:
-        #can be either “private”, “group”, “supergroup” or “channel”
         chat_type = data.chat.type
     except Exception as e:
         print(e)
@@ -139,7 +139,8 @@ def aiprocess1(aifinal_question):
     try:
         openai.api_key = openaikey
         response = openai.Completion.create(
-            model="text-davinci-003", #available models here: https://platform.openai.com/docs/models/overview
+            model="gpt-3.5-turbo-instruct", #text-davinci-003 is getting replaced by gpt3.5turbo and will not be available for much longer
+            #model="text-davinci-003", #available models here: https://platform.openai.com/docs/models/overview
             prompt=aifinal_question,
             temperature=0.5,
             max_tokens=485,
